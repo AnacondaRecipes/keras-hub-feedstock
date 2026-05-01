@@ -28,7 +28,8 @@ requirements:
     - regex
     - rich
     - kagglehub
-    - tensorflow-text  # [not win]
+    - tokenizers
+    - tensorflow-text  # [not win and py<314]
 
 test:
   imports:
