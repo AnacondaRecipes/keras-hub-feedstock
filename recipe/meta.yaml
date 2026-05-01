@@ -1,45 +1,59 @@
-{% set name = "<PLEASE ADD PKG NAME>" %}
-{% set version = "<PLEASE ADD PKG VERSION>" %}
+{% set name = "keras-hub" %}
+{% set version = "0.27.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: <sha256>
+  url: https://github.com/keras-team/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: e565a3b66caee49590311b818f04d0b978355e0690f4b219c628871cf00a8694
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<38]
+  skip: True  # [py<311]
 
 requirements:
   host:
     - python
     - pip
+    - setuptools >=61.0
   run:
     - python
+    - keras >=3.13
+    - absl-py
+    - numpy
+    - packaging
+    - regex
+    - rich
+    - kagglehub
+    - tensorflow-text  # [not win]
 
 test:
   imports:
-    - {{ name.replace('-', '.') }}
+    - keras_hub
+    - keras_hub.src
   requires:
     - pip
   commands:
     - pip check
 
 about:
-  home: <PLEASE ADD HOME URL>
-  summary: <PLEASE ADD SUMMARY>
+  home: https://keras.io/keras_hub/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Pretrained models for Keras.
   description: |
-    <PLEASE ADD DESCRIPTION>
-  license: <PLEASE ADD LICENSE>
-  license_family: <PLEASE ADD LICENSE_FAMILY>
-  license_file: <PLEASE_ADD_LICENSE_FILE>
-  dev_url: <PLEASE ADD DEV URL>
-  doc_url: <PLEASE ADD DOC URL>
+    KerasHub is a pretrained modeling library that provides Keras 3
+    implementations of popular model architectures, paired with a collection of
+    pretrained checkpoints available on Kaggle Models. Models can be used for
+    both training and inference on any of the TensorFlow, Jax, and PyTorch
+    backends.
+  doc_url: https://keras.io/keras_hub/
+  dev_url: https://github.com/keras-team/keras-hub
 
 extra:
   recipe-maintainers:
-    - Jrice1317
+    - xkong-anaconda
