@@ -29,6 +29,7 @@ requirements:
     - rich
     - kagglehub
     - tokenizers
+    - sentencepiece
     - tensorflow-text  # [not win and py<314]
 
 test:
