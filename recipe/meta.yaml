@@ -12,7 +12,7 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<311]
+  skip: True  # [py<311 or py>313]
 
 requirements:
   host:
@@ -30,7 +30,8 @@ requirements:
     - kagglehub
     - tokenizers
     - sentencepiece
-    - tensorflow-text  # [not win and py<314]
+    - tensorflow
+    - tensorflow-text  # [not win]
 
 test:
   imports:
