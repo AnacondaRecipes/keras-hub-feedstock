@@ -28,10 +28,14 @@ requirements:
     - regex
     - rich
     - kagglehub
-    - tokenizers
+  run_constrained:
+    # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements.txt
+    - tensorflow >=2.19
+    - tensorflow-text >=2.19      # [not win]
+    # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements-common.txt
     - sentencepiece
-    - tensorflow
-    - tensorflow-text  # [not win]
+    # Not declared upstream but byte_pair_tokenizer.py imports it unconditionally
+    - tokenizers
 
 test:
   imports:
@@ -39,6 +43,12 @@ test:
     - keras_hub.src
   requires:
     - pip
+    # required so `import keras_hub` resolves (gemma3/4 preprocessor imports tensorflow,
+    # byte_pair_tokenizer imports tokenizers, sentence_piece_tokenizer imports sentencepiece)
+    - tensorflow
+    - tensorflow-text  # [not win]
+    - tokenizers
+    - sentencepiece
   commands:
     - pip check
 
