@@ -49,6 +49,7 @@ test:
     # so it must be in test.requires regardless of which backend keras picks.
     - jax
     - tensorflow
+    - tensorflow-text  # [not win]
     - pytorch
     # eagerly imported by keras_hub.tokenizers.v2 modules
     - tokenizers
