@@ -32,10 +32,6 @@ requirements:
     # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements.txt
     - tensorflow >=2.19
     - tensorflow-text >=2.19      # [not win]
-    # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements-common.txt
-    - sentencepiece
-    # Not declared upstream but byte_pair_tokenizer.py imports it unconditionally
-    - tokenizers
 
 test:
   imports:
