@@ -39,10 +39,13 @@ test:
     - keras_hub.src
   requires:
     - pip
-    # required so `import keras_hub` resolves (gemma3/4 preprocessor imports tensorflow,
-    # byte_pair_tokenizer imports tokenizers, sentence_piece_tokenizer imports sentencepiece)
-    - tensorflow
-    - tensorflow-text  # [not win]
+    # Mirror keras-feedstock multi-backend test pattern; keras (a hard dep) needs at
+    # least one backend installed for `import keras` (and thus `import keras_hub`) to
+    # resolve. jax covers py3.14; tensorflow/pytorch fill out the lower Python versions.
+    - jax
+    - tensorflow  # [py<314]
+    - pytorch     # [py<314]
+    # eagerly imported by keras_hub.tokenizers.v2 modules
     - tokenizers
     - sentencepiece
   commands:
