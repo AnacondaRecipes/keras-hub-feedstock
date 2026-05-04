@@ -30,7 +30,7 @@ requirements:
     - kagglehub
   run_constrained:
     # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements.txt
-    - tensorflow >=2.19
+    - tensorflow-base >=2.19
     - tensorflow-text >=2.19      # [not win]
 
 test:
