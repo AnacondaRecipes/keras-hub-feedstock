@@ -12,7 +12,12 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<311]
+  # py>313 skipped: keras_hub.src.models.gemma3/gemma4 preprocessor unconditionally
+  # `import tensorflow as tf` at module top, and tensorflow has no py3.14 build on
+  # pkgs/main. Backend choice (jax/torch/tf) doesn't help — gemma3/4 require tf
+  # specifically. Drop the upper bound when either upstream lazifies the import or
+  # tensorflow ships py3.14.
+  skip: True  # [py<311 or py>313]
 
 requirements:
   host:
@@ -39,12 +44,12 @@ test:
     - keras_hub.src
   requires:
     - pip
-    # Mirror keras-feedstock multi-backend test pattern; keras (a hard dep) needs at
-    # least one backend installed for `import keras` (and thus `import keras_hub`) to
-    # resolve. jax covers py3.14; tensorflow/pytorch fill out the lower Python versions.
+    # Mirror keras-feedstock multi-backend test pattern. tensorflow is also required
+    # by keras_hub.src.models.gemma3/gemma4 preprocessors (top-level `import tensorflow`),
+    # so it must be in test.requires regardless of which backend keras picks.
     - jax
-    - tensorflow  # [py<314]
-    - pytorch     # [py<314]
+    - tensorflow
+    - pytorch
     # eagerly imported by keras_hub.tokenizers.v2 modules
     - tokenizers
     - sentencepiece
