@@ -33,10 +33,14 @@ requirements:
     - regex
     - rich
     - kagglehub
-  run_constrained:
-    # https://github.com/keras-team/keras-hub/blob/v0.27.1/requirements.txt
-    - tensorflow-base >=2.19
-    - tensorflow-text >=2.19      # [not win]
+    # gemma3/4 preprocessors unconditionally `import tensorflow as tf`; keras also
+    # falls back to tensorflow in keras/src/tree/optree_impl.py when no backend is set
+    - tensorflow-base
+    # upstream pyproject.toml requires tensorflow-text on non-Windows
+    - tensorflow-text  # [not win]
+    # keras_hub.tokenizers.v2 modules eagerly import these at package init
+    - tokenizers
+    - sentencepiece
 
 test:
   imports:
@@ -44,16 +48,9 @@ test:
     - keras_hub.src
   requires:
     - pip
-    # Mirror keras-feedstock multi-backend test pattern. tensorflow is also required
-    # by keras_hub.src.models.gemma3/gemma4 preprocessors (top-level `import tensorflow`),
-    # so it must be in test.requires regardless of which backend keras picks.
+    # additional backends so keras-feedstock multi-backend pattern is exercised in CI
     - jax
-    - tensorflow
-    - tensorflow-text  # [not win]
     - pytorch
-    # eagerly imported by keras_hub.tokenizers.v2 modules
-    - tokenizers
-    - sentencepiece
   commands:
     - pip check
 
