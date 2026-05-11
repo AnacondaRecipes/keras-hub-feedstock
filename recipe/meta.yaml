@@ -37,7 +37,7 @@ requirements:
     # falls back to tensorflow in keras/src/tree/optree_impl.py when no backend is set
     - tensorflow-base
     # upstream pyproject.toml requires tensorflow-text on non-Windows
-    - tensorflow-text  # [not win]
+    - tensorflow-text >=2.19  # [not win]
     # keras_hub.tokenizers.v2 modules eagerly import these at package init
     - tokenizers
     - sentencepiece
