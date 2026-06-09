@@ -1,45 +1,74 @@
-{% set name = "<PLEASE ADD PKG NAME>" %}
-{% set version = "<PLEASE ADD PKG VERSION>" %}
+{% set name = "keras-hub" %}
+{% set version = "0.27.1" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: <sha256>
+  url: https://github.com/{{ name.split('-')[0] }}-team/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: e565a3b66caee49590311b818f04d0b978355e0690f4b219c628871cf00a8694
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<38]
+  # py>313 skipped: keras_hub.src.models.gemma3/gemma4 preprocessor unconditionally
+  # `import tensorflow as tf` at module top, and tensorflow has no py3.14 build on
+  # pkgs/main. Backend choice (jax/torch/tf) doesn't help — gemma3/4 require tf
+  # specifically. Drop the upper bound when either upstream lazifies the import or
+  # tensorflow ships py3.14.
+  skip: True  # [py<311 or py>313]
 
 requirements:
   host:
     - python
     - pip
+    - setuptools >=61.0
   run:
     - python
+    - keras >=3.13
+    - absl-py
+    - numpy
+    - packaging
+    - regex
+    - rich
+    - kagglehub
+    # gemma3/4 preprocessors unconditionally `import tensorflow as tf`; keras also
+    # falls back to tensorflow in keras/src/tree/optree_impl.py when no backend is set
+    - tensorflow >=2.19
+    # upstream pyproject.toml requires tensorflow-text on non-Windows
+    - tensorflow-text >=2.19  # [not win]
+    # keras_hub.tokenizers.v2 modules eagerly import these at package init
+    - tokenizers
+    - sentencepiece
 
 test:
   imports:
-    - {{ name.replace('-', '.') }}
+    - keras_hub
+    - keras_hub.src
   requires:
     - pip
+    # additional backends so keras-feedstock multi-backend pattern is exercised in CI
+    - jax
+    - pytorch
   commands:
     - pip check
 
 about:
-  home: <PLEASE ADD HOME URL>
-  summary: <PLEASE ADD SUMMARY>
+  home: https://keras.io/keras_hub/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Pretrained models for Keras.
   description: |
-    <PLEASE ADD DESCRIPTION>
-  license: <PLEASE ADD LICENSE>
-  license_family: <PLEASE ADD LICENSE_FAMILY>
-  license_file: <PLEASE_ADD_LICENSE_FILE>
-  dev_url: <PLEASE ADD DEV URL>
-  doc_url: <PLEASE ADD DOC URL>
+    KerasHub is a pretrained modeling library that provides Keras 3
+    implementations of popular model architectures, paired with a collection of
+    pretrained checkpoints available on Kaggle Models. Models can be used for
+    both training and inference on any of the TensorFlow, Jax, and PyTorch
+    backends.
+  doc_url: https://keras.io/keras_hub/
+  dev_url: https://github.com/keras-team/keras-hub
 
 extra:
   recipe-maintainers:
-    - Jrice1317
+    - xkong-anaconda
