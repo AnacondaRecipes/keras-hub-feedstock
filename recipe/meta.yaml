@@ -6,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/keras-team/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  url: https://github.com/{{ name.split('-')[0] }}-team/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: e565a3b66caee49590311b818f04d0b978355e0690f4b219c628871cf00a8694
 
 build:
